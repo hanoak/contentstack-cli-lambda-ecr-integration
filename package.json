@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:fix": "eslint --fix ./*.js",
     "precommit": "lint-staged --concurrent false",
-    "dev": "nodemon server.js",
+    "dev": "nodemon --ignore tmp/ server.js",
     "start": "node server.js",
     "prettify": "prettier --write ."
   },
@@ -48,5 +48,9 @@
     "hooks": {
       "pre-commit": "npm run precommit"
     }
+  },
+  "dependencies": {
+    "extract-zip": "^2.0.1",
+    "node-downloader-helper": "^2.1.9"
   }
 }
