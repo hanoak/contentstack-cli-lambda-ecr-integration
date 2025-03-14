@@ -1,0 +1,45 @@
+{
+  "name": "contentstack-cli-lambda-ecr-integration",
+  "version": "1.0.0",
+  "description": "This project helps you add @contentstack.cli as a dependency to perform all it's operations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:fix": "eslint --fix ./*.js",
+    "precommit": "lint-staged --concurrent false"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hanoak/contentstack-cli-lambda-ecr-integration.git"
+  },
+  "keywords": [
+    "contentstack",
+    "contentstack-cli",
+    "ECR",
+    "AWS Lambda",
+    "Docker"
+  ],
+  "author": "Hanoak",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/MIT"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/hanoak/contentstack-cli-lambda-ecr-integration/issues"
+  },
+  "homepage": "https://github.com/hanoak/contentstack-cli-lambda-ecr-integration#readme",
+  "devDependencies": {
+    "eslint": "^9.22.0",
+    "globals": "^16.0.0",
+    "husky": "^4.3.8",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.5.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
+  }
+}
