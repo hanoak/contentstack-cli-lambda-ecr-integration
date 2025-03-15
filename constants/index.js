@@ -1,7 +1,7 @@
 module.exports = {
   ERROR_TEXTS: {
     INTERNAL_ERROR: "Internal error, please try again.",
-    BAD_REQ: "Bad Request",
+    BAD_REQ: "Invalid data provided.",
   },
   HTTP_STATUS: {
     OK: 200,

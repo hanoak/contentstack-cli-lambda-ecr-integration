@@ -5,6 +5,26 @@ const extract = require("extract-zip");
 const constants = require("../constants");
 const config = require("../config");
 
+const reqValidation = (method, body) => {
+  const region = body?.region;
+  const stackApiKey = body?.api_key;
+  const mgToken = body?.management_token;
+
+  if (method !== "POST") return false;
+
+  if (
+    !region ||
+    !stackApiKey ||
+    !mgToken ||
+    typeof region !== "string" ||
+    typeof stackApiKey !== "string" ||
+    typeof mgToken !== "string"
+  )
+    return false;
+
+  return true;
+};
+
 const lambdaResponse = (statusCode, body, headers = {}) => {
   console.info(constants.LOGS.RES, statusCode);
   return {
@@ -101,6 +121,7 @@ const importStackContent = async (dataPath, region, stackApiKey, mgToken) => {
 };
 
 module.exports = {
+  reqValidation,
   lambdaResponse,
   makeDir,
   downloadStackData,

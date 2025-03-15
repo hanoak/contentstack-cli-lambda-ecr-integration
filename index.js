@@ -2,9 +2,15 @@ const constants = require("./constants");
 const utils = require("./utils");
 const config = require("./config");
 
-exports.handler = async ({ body }) => {
+exports.handler = async ({ body, httpMethod }) => {
   try {
     console.info(constants.LOGS.REQ, JSON.stringify(body || {}));
+
+    if (!utils.reqValidation(httpMethod, body))
+      return utils.lambdaResponse(
+        constants.HTTP_STATUS.BAD_REQUEST,
+        constants.ERROR_TEXTS.BAD_REQ,
+      );
 
     const workspacePath = `${__dirname}/tmp/${Date.now()}`;
 
