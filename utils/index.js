@@ -22,6 +22,8 @@ const reqValidation = (method, body) => {
   )
     return false;
 
+  if (!constants.CONTENTSTACK_REGIONS.includes(region)) return false;
+
   return true;
 };
 

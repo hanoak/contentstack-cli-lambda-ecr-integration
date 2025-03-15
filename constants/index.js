@@ -3,6 +3,7 @@ module.exports = {
     INTERNAL_ERROR: "Internal error, please try again.",
     BAD_REQ: "Invalid data provided.",
   },
+  CONTENTSTACK_REGIONS: ["NA", "EU", "AZURE-NA", "AZURE-EU", "GCP-NA"],
   HTTP_STATUS: {
     OK: 200,
     BAD_REQUEST: 400,
