@@ -4,15 +4,19 @@ const config = require("./config");
 
 exports.handler = async ({ body, httpMethod }) => {
   try {
-    console.info(constants.LOGS.REQ, JSON.stringify(body || {}));
+    console.info(constants.LOGS.REQ, body || "");
+    const newBody = JSON.parse(body || "{}");
 
-    if (!utils.reqValidation(httpMethod, body))
+    if (!utils.reqValidation(httpMethod, newBody))
       return utils.lambdaResponse(
         constants.HTTP_STATUS.BAD_REQUEST,
         constants.ERROR_TEXTS.BAD_REQ,
       );
 
-    const workspacePath = `${__dirname}/tmp/${Date.now()}`;
+    const workspacePath =
+      config.APP_ENV === "AWS"
+        ? `/tmp/${Date.now()}`
+        : `${__dirname}/tmp/${Date.now()}`;
 
     //Creating a workspace folder
     utils.makeDir(workspacePath);
@@ -39,10 +43,10 @@ exports.handler = async ({ body, httpMethod }) => {
     //Import stack content
     if (
       !(await utils.importStackContent(
-        `${workspacePath}/${config.EXTRACT_FOLDER}/main`,
-        body?.region,
-        body?.api_key,
-        body?.management_token,
+        `${workspacePath}/${config.EXTRACT_FOLDER}`,
+        newBody?.region,
+        newBody?.api_key,
+        newBody?.management_token,
       ))
     )
       return utils.lambdaResponse(

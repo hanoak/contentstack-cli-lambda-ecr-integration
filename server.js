@@ -14,7 +14,7 @@ app.use(express.json());
 app.use("/", (req, res) => {
   const event = {
     queryStringParameters: req?.query,
-    body: req?.body,
+    body: JSON.stringify(req?.body || {}),
     httpMethod: req.method,
   };
 
