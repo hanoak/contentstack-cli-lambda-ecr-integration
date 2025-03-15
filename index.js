@@ -4,23 +4,25 @@ const config = require("./config");
 
 exports.handler = async ({ body }) => {
   try {
-    console.info(constants.LOGS.REQ, JSON.stringify(body));
+    console.info(constants.LOGS.REQ, JSON.stringify(body || {}));
 
-    const folderPath = `${__dirname}/tmp/${Date.now()}`;
+    const workspacePath = `${__dirname}/tmp/${Date.now()}`;
 
     //Creating a workspace folder
-    utils.makeDir(folderPath);
+    utils.makeDir(workspacePath);
 
-    if (!(await utils.downloadStackData(config.STACK_DATA, folderPath)))
+    //Download Stack content
+    if (!(await utils.downloadStackData(config.STACK_DATA, workspacePath)))
       return utils.lambdaResponse(
         constants.HTTP_STATUS.UNPROCESSABLE_REQ,
         constants.LOGS.DOWNLOAD_FAILED,
       );
 
+    //Extract stack content
     if (
       !(await utils.extractStackData(
-        `${folderPath}/${config.DATAFILE_NAME}`,
-        folderPath,
+        `${workspacePath}/${config.DATAFILE_NAME}`,
+        workspacePath,
       ))
     )
       return utils.lambdaResponse(
@@ -28,7 +30,24 @@ exports.handler = async ({ body }) => {
         constants.LOGS.EXTARCT_FAILED,
       );
 
-    return utils.lambdaResponse(constants.HTTP_STATUS.OK, "Lambda response!");
+    //Import stack content
+    if (
+      !(await utils.importStackContent(
+        `${workspacePath}/${config.EXTRACT_FOLDER}/main`,
+        body?.region,
+        body?.api_key,
+        body?.management_token,
+      ))
+    )
+      return utils.lambdaResponse(
+        constants.HTTP_STATUS.UNPROCESSABLE_REQ,
+        constants.LOGS.IMPORT_FAILED,
+      );
+
+    return utils.lambdaResponse(
+      constants.HTTP_STATUS.OK,
+      constants.LOGS.REQ_SUCCESS,
+    );
   } catch (error) {
     console.error(constants.ERROR_TEXTS.INTERNAL_ERROR, error);
 

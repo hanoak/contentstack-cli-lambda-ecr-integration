@@ -7,9 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:fix": "eslint --fix ./*.js",
     "precommit": "lint-staged --concurrent false",
-    "dev": "nodemon --ignore tmp/ server.js",
+    "dev": "nodemon server.js",
     "start": "node server.js",
     "prettify": "prettier --write ."
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "tmp/",
+      "logs/"
+    ]
   },
   "repository": {
     "type": "git",
@@ -50,7 +56,9 @@
     }
   },
   "dependencies": {
+    "@contentstack/cli": "^1.36.0",
     "extract-zip": "^2.0.1",
-    "node-downloader-helper": "^2.1.9"
+    "node-downloader-helper": "^2.1.9",
+    "shelljs": "^0.9.1"
   }
 }

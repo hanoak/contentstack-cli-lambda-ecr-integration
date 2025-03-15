@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { DownloaderHelper } = require("node-downloader-helper");
+const shelljs = require("shelljs");
 const extract = require("extract-zip");
 const constants = require("../constants");
 const config = require("../config");
@@ -56,9 +57,54 @@ const extractStackData = async (source, target) => {
   }
 };
 
+const ExecuteShellCommand = async (cmd) => {
+  try {
+    console.info(constants.LOGS.SHELL_START, cmd);
+    const stdout = await new Promise((resolve, reject) => {
+      shelljs.exec(cmd, (code, stdout, stderr) => {
+        console.log(constants.LOGS.SHELL_CODE, code);
+        if (code > 0) reject(stderr || constants.LOGS.SHELL_FAILED);
+        else resolve();
+      });
+    });
+    console.info(constants.LOGS.SHELL_FINISHED, cmd);
+    return stdout;
+  } catch (error) {
+    console.warn(error);
+    throw error;
+  }
+};
+
+const importStackContent = async (dataPath, region, stackApiKey, mgToken) => {
+  try {
+    console.info(constants.LOGS.IMPORT_START);
+
+    const csdxPath = `node_modules/@contentstack/cli/bin/run.js`;
+
+    await ExecuteShellCommand(`${csdxPath} config:set:region ${region}`);
+
+    await ExecuteShellCommand(
+      `${csdxPath} auth:tokens:add --alias managementToken --stack-api-key ${stackApiKey} --management --token ${mgToken} --yes`,
+    );
+
+    await ExecuteShellCommand(
+      `${csdxPath} cm:stacks:import -a managementToken -d ${dataPath} -c './import-config.json'`,
+    );
+
+    console.info(constants.LOGS.IMPORT_FINISHED);
+
+    return true;
+  } catch (err) {
+    console.error(constants.LOGS.IMPORT_FAILED);
+    return false;
+  }
+};
+
 module.exports = {
   lambdaResponse,
   makeDir,
   downloadStackData,
   extractStackData,
+  ExecuteShellCommand,
+  importStackContent,
 };
